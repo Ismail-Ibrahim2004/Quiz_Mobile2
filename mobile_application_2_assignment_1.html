@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mobile Application 2 — Assignment 1 · Practice Exam</title>
+<style>
+/* ============================================================
+   Mobile Application 2 — Assignment 1 Practice Exam
+   Offline single file · HTML + CSS + Vanilla JS
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+
+:root{
+  --navy:#0b2545;
+  --navy-700:#123a63;
+  --navy-500:#2d5f8f;
+  --navy-100:#e2ebf4;
+  --teal:#0f766e;
+  --teal-500:#0d9488;
+  --teal-300:#7fd0c6;
+  --teal-100:#daf2ef;
+  --ink:#12233a;
+  --muted:#5b6f86;
+  --paper:#eef3f8;
+  --card:#ffffff;
+  --line:#d9e3ee;
+  --ok:#14713f;
+  --ok-bg:#e7f6ed;
+  --bad:#ab2530;
+  --bad-bg:#fdecee;
+  --amber:#8a5b00;
+  --shadow-sm:0 1px 2px rgba(11,37,69,.07);
+  --shadow:0 1px 2px rgba(11,37,69,.06),0 16px 34px -18px rgba(11,37,69,.35);
+  --shadow-lg:0 30px 70px -30px rgba(11,37,69,.5);
+  --font-display:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,"Times New Roman",serif;
+  --font-body:"Segoe UI Variable Text","Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue","Noto Sans",sans-serif;
+  --font-mono:ui-monospace,"SF Mono","Cascadia Mono",Menlo,Consolas,monospace;
+  --r:14px;
+}
+
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  color:var(--ink);
+  background:var(--paper);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ---------- Ambient layered background ---------- */
+.bg-layer{position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(760px 420px at 8% -8%,rgba(13,148,136,.16),transparent 62%),
+    radial-gradient(680px 460px at 96% -4%,rgba(11,37,69,.14),transparent 60%),
+    radial-gradient(900px 600px at 60% 110%,rgba(13,148,136,.10),transparent 65%),
+    linear-gradient(180deg,#f6f9fc 0%,#eaf1f7 55%,#e6eef6 100%);
+}
+.bg-layer::after{content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(11,37,69,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(11,37,69,.045) 1px,transparent 1px);
+  background-size:46px 46px,46px 46px;
+  mask-image:radial-gradient(1200px 800px at 50% 0%,#000 20%,transparent 85%);
+  -webkit-mask-image:radial-gradient(1200px 800px at 50% 0%,#000 20%,transparent 85%);
+}
+.drift{position:fixed;border-radius:50%;z-index:-1;pointer-events:none;opacity:.5;filter:blur(.3px)}
+.drift.d1{width:9px;height:9px;background:var(--teal-300);top:22%;left:6%;animation:float1 17s ease-in-out infinite}
+.drift.d2{width:6px;height:6px;background:var(--navy-500);top:64%;left:12%;animation:float2 22s ease-in-out infinite}
+.drift.d3{width:12px;height:12px;border:2px solid rgba(13,148,136,.35);top:34%;right:7%;animation:float1 26s ease-in-out infinite reverse}
+.drift.d4{width:7px;height:7px;border:2px solid rgba(11,37,69,.25);top:78%;right:14%;animation:float2 19s ease-in-out infinite reverse}
+@keyframes float1{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(26px,-38px,0)}}
+@keyframes float2{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(-30px,-26px,0)}}
+
+.wrap{width:min(1220px,100% - 34px);margin-inline:auto}
+
+/* ---------- Masthead ---------- */
+.masthead{padding:34px 0 0}
+.mast-inner{
+  display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end;justify-content:space-between;
+  padding:26px 28px;border-radius:18px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0b2545 0%,#123a63 46%,#0f5d59 100%);
+  color:#eef5fb;box-shadow:var(--shadow-lg);
+}
+.mast-inner::before{content:"";position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(115deg,rgba(255,255,255,.05) 0 1px,transparent 1px 12px),
+    radial-gradient(420px 200px at 88% 120%,rgba(127,208,198,.28),transparent 70%);
+}
+.mast-inner::after{content:"";position:absolute;top:-60%;left:-10%;width:45%;height:220%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);
+  transform:rotate(14deg);animation:sheen 9s ease-in-out infinite}
+@keyframes sheen{0%,72%{transform:translateX(-40%) rotate(14deg)}100%{transform:translateX(320%) rotate(14deg)}}
+.mast-brand{display:flex;gap:18px;align-items:center;position:relative;z-index:2}
+.crest{
+  width:74px;height:82px;flex:0 0 auto;display:grid;place-items:center;position:relative;
+  background:linear-gradient(180deg,#f4faf9,#d9f2ef);color:var(--navy);
+  border-radius:8px 8px 40% 40%/8px 8px 26% 26%;
+  box-shadow:inset 0 0 0 2px rgba(11,37,69,.25),0 10px 24px -10px rgba(0,0,0,.6);
+  font-family:var(--font-display);
+}
+.crest b{font-size:1.5rem;letter-spacing:.5px;line-height:1}
+.crest small{font-family:var(--font-mono);font-size:.52rem;letter-spacing:.22em;color:var(--teal);margin-top:5px}
+.mast-title{margin:0;font-family:var(--font-display);font-weight:700;
+  font-size:clamp(1.9rem,4.6vw,3.15rem);line-height:1.02;letter-spacing:-.5px;color:#fff;
+  text-shadow:0 2px 18px rgba(0,0,0,.28)}
+.mast-sub{margin:8px 0 0;font-size:clamp(.86rem,1.5vw,1.02rem);letter-spacing:.26em;text-transform:uppercase;
+  color:var(--teal-300);font-weight:600}
+.mast-meta{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:2}
+.mchip{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.22);
+  padding:9px 15px;border-radius:999px;font-size:.78rem;letter-spacing:.05em;
+  display:flex;align-items:center;gap:8px;backdrop-filter:blur(2px);transition:.25s}
+.mchip:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+.mchip b{font-family:var(--font-display);font-size:1.05rem;color:#fff}
+.rule{height:0;border-top:1px solid rgba(11,37,69,.18);border-bottom:1px solid rgba(11,37,69,.10);margin:16px 0 0}
+
+/* ---------- Screens ---------- */
+.screen{padding:26px 0 60px}
+.screen[hidden]{display:none}
+.screen.enter{animation:screenIn .5s cubic-bezier(.22,.8,.28,1) both}
+@keyframes screenIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* ---------- Cover ---------- */
+.cover-grid{display:grid;grid-template-columns:1.35fr .95fr;gap:24px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:26px}
+.panel-h{display:flex;align-items:center;gap:12px;margin:0 0 4px}
+.panel-h .bar{width:5px;height:26px;border-radius:3px;background:linear-gradient(180deg,var(--teal-500),var(--navy))}
+.panel-h h2{font-family:var(--font-display);font-size:1.42rem;margin:0;color:var(--navy);letter-spacing:-.2px}
+.panel-note{color:var(--muted);font-size:.9rem;margin:6px 0 18px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:22px}
+.fact{border:1px solid var(--line);border-left:4px solid var(--teal-500);border-radius:10px;padding:13px 15px;background:linear-gradient(180deg,#fbfdfe,#f3f8fb);transition:.25s}
+.fact:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);border-left-color:var(--navy)}
+.fact span{display:block;font-family:var(--font-display);font-size:1.7rem;color:var(--navy);line-height:1}
+.fact em{display:block;font-style:normal;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.topics{list-style:none;margin:0;padding:0;border-top:1px dashed var(--line)}
+.topics li{display:flex;align-items:center;gap:13px;padding:12px 4px;border-bottom:1px dashed var(--line);transition:.22s}
+.topics li:hover{background:#f6fafc;padding-left:10px}
+.tnum{font-family:var(--font-mono);font-size:.72rem;color:var(--teal);border:1px solid var(--teal-100);background:var(--teal-100);
+  border-radius:6px;padding:3px 7px;flex:0 0 auto;font-weight:700}
+.tname{flex:1 1 auto;font-weight:600;color:var(--navy);font-size:.95rem}
+.trange{font-family:var(--font-mono);font-size:.74rem;color:var(--muted);background:#f2f6fa;border:1px solid var(--line);border-radius:6px;padding:3px 8px}
+.rules{margin:0;padding-left:19px;color:var(--muted);font-size:.9rem}
+.rules li{margin-bottom:9px}
+.rules b{color:var(--navy)}
+.big-start{width:100%;justify-content:center;margin-top:20px;font-size:1.02rem;padding:16px 22px}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:9px;justify-content:center;
+  font-family:var(--font-body);font-weight:650;font-size:.9rem;letter-spacing:.01em;
+  border-radius:11px;border:1.5px solid transparent;padding:11px 18px;cursor:pointer;
+  transition:transform .18s cubic-bezier(.3,.9,.3,1),box-shadow .2s,background .2s,border-color .2s,color .2s;
+  user-select:none;text-decoration:none;position:relative;overflow:hidden}
+.btn:active{transform:translateY(0) scale(.985)}
+.btn:focus-visible{outline:3px solid rgba(13,148,136,.4);outline-offset:2px}
+.btn svg{width:17px;height:17px;flex:0 0 auto}
+.btn .ar{display:block;font-size:.68rem;font-weight:500;opacity:.72;margin-top:1px}
+.btn-primary{background:linear-gradient(180deg,#133d6b,var(--navy));color:#fff;box-shadow:0 10px 22px -12px rgba(11,37,69,.9)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(11,37,69,.95)}
+.btn-teal{background:linear-gradient(180deg,#12a193,var(--teal));color:#fff;box-shadow:0 10px 22px -12px rgba(15,118,110,.95)}
+.btn-teal:hover{transform:translateY(-2px);box-shadow:0 16px 30px -14px rgba(15,118,110,1)}
+.btn-ghost{background:#fff;border-color:var(--line);color:var(--navy);box-shadow:var(--shadow-sm)}
+.btn-ghost:hover{border-color:var(--teal-500);color:var(--teal);transform:translateY(-2px);box-shadow:var(--shadow)}
+.btn-danger{background:linear-gradient(180deg,#c33842,#a0222c);color:#fff;box-shadow:0 10px 22px -12px rgba(160,34,44,.9)}
+.btn-danger:hover{transform:translateY(-2px)}
+.btn[disabled]{opacity:.42;cursor:not-allowed;transform:none!important;box-shadow:none}
+
+/* ---------- Exam topbar ---------- */
+.exam-topbar{position:sticky;top:0;z-index:40;margin-bottom:22px;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(9px);
+  border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+  padding:13px 16px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.tb-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.q-counter{font-family:var(--font-display);font-size:1.12rem;color:var(--navy);white-space:nowrap}
+.q-counter b{font-size:1.5rem}
+.q-counter span{color:var(--muted);font-size:.9rem}
+.topic-chip{display:inline-flex;align-items:center;gap:7px;background:var(--navy-100);color:var(--navy);
+  border:1px solid #c9d9e9;border-radius:999px;padding:5px 13px;font-size:.76rem;font-weight:650;letter-spacing:.03em}
+.topic-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--teal-500);box-shadow:0 0 0 3px rgba(13,148,136,.18)}
+.tb-right{display:flex;align-items:center;gap:14px;flex:1 1 320px;justify-content:flex-end}
+.timer{font-family:var(--font-mono);font-size:.85rem;color:var(--navy);background:#f2f7fa;border:1px solid var(--line);
+  border-radius:8px;padding:5px 10px;display:flex;align-items:center;gap:7px}
+.pulse{width:7px;height:7px;border-radius:50%;background:#e0533f;animation:pulse 1.7s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.7)}}
+.prog-wrap{flex:1 1 160px;min-width:130px}
+.prog{height:9px;border-radius:99px;background:#e3ebf3;border:1px solid #d3dfeb;overflow:hidden;position:relative}
+.prog-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,var(--teal-500),var(--navy-500));
+  transition:width .55s cubic-bezier(.22,.8,.28,1);position:relative}
+.prog-fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
+  transform:translateX(-100%);animation:shimmer 2.2s linear infinite}
+@keyframes shimmer{to{transform:translateX(200%)}}
+.prog-label{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-top:5px;font-family:var(--font-mono);letter-spacing:.04em}
+.nav-toggle{display:none}
+
+/* ---------- Exam layout ---------- */
+.exam-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+.q-card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.q-card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,var(--navy),var(--teal-500),var(--teal-300))}
+.q-head{display:flex;gap:20px;align-items:flex-start;padding:26px 28px 6px}
+.q-bignum{font-family:var(--font-display);font-size:clamp(3rem,7vw,4.6rem);line-height:.82;color:var(--navy-100);
+  font-weight:700;letter-spacing:-3px;flex:0 0 auto;transition:color .3s}
+.q-card:hover .q-bignum{color:#cfe0ee}
+.q-headtxt{flex:1 1 auto}
+.q-tag{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);font-weight:700}
+.q-text{font-size:clamp(1.08rem,2.1vw,1.36rem);font-weight:600;color:var(--navy);margin:9px 0 0;line-height:1.45;letter-spacing:-.2px}
+.q-body{padding:14px 28px 28px}
+.opt-group{display:grid;gap:13px;margin:10px 0 6px}
+.opt{display:flex;gap:14px;align-items:flex-start;padding:15px 17px;border:1.6px solid var(--line);border-radius:13px;
+  background:linear-gradient(180deg,#fff,#fbfdfe);cursor:pointer;transition:transform .18s,border-color .2s,box-shadow .25s,background .25s;margin:0}
+.opt:hover{border-color:#93c8c1;transform:translateY(-2px);box-shadow:0 12px 24px -16px rgba(11,37,69,.55)}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt-key{width:36px;height:36px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
+  font-family:var(--font-display);font-weight:700;font-size:1.02rem;color:var(--navy);
+  border:1.6px solid var(--line);background:#f4f8fb;transition:.25s}
+.opt-text{font-size:.99rem;color:var(--ink);padding-top:6px;font-weight:500}
+.opt.sel{border-color:var(--teal-500);background:linear-gradient(180deg,#f1fbfa,#fff);box-shadow:0 0 0 3px rgba(13,148,136,.14)}
+.opt.sel .opt-key{background:var(--teal-500);border-color:var(--teal-500);color:#fff;transform:rotate(-6deg) scale(1.05)}
+.opt input:checked ~ .opt-key{background:var(--teal-500);border-color:var(--teal-500);color:#fff}
+.opt input:focus-visible ~ .opt-key{box-shadow:0 0 0 4px rgba(13,148,136,.35)}
+.q-actions{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:22px;padding-top:20px;border-top:1px dashed var(--line);flex-wrap:wrap}
+.q-hint{font-size:.76rem;color:var(--muted);font-family:var(--font-mono)}
+.q-hint kbd{background:#f1f5f9;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;font-size:.72rem;color:var(--navy)}
+.q-anim-fwd{animation:slideFwd .38s cubic-bezier(.22,.8,.28,1) both}
+.q-anim-back{animation:slideBack .38s cubic-bezier(.22,.8,.28,1) both}
+@keyframes slideFwd{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes slideBack{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+
+/* ---------- Sidebar ---------- */
+.sidebar{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;position:sticky;top:92px}
+.side-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.side-h h3{margin:0;font-family:var(--font-display);font-size:1.08rem;color:var(--navy)}
+.side-h .cnt{font-family:var(--font-mono);font-size:.72rem;color:var(--muted)}
+.navgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin-bottom:16px}
+.nbtn{aspect-ratio:1/1;border-radius:9px;border:1.5px solid var(--line);background:#fbfdfe;color:var(--navy-700);
+  font-family:var(--font-mono);font-size:.76rem;font-weight:700;cursor:pointer;transition:.18s;padding:0;position:relative}
+.nbtn:hover{transform:translateY(-2px) scale(1.05);border-color:var(--teal-500);color:var(--teal);z-index:2}
+.nbtn.answered{background:var(--teal-100);border-color:#9bd8d0;color:#0a5f57}
+.nbtn.current{outline:2.5px solid var(--navy);outline-offset:2px;background:#fff;color:var(--navy);transform:scale(1.06);z-index:3}
+.nbtn.current.answered{background:var(--teal-100)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.7rem;color:var(--muted);margin-bottom:18px;padding-bottom:16px;border-bottom:1px dashed var(--line)}
+.legend i{width:11px;height:11px;border-radius:4px;display:inline-block;margin-right:5px;vertical-align:-1px;border:1.5px solid var(--line);background:#fbfdfe}
+.legend .l-ans i{background:var(--teal-100);border-color:#9bd8d0}
+.legend .l-cur i{outline:2px solid var(--navy);outline-offset:1px}
+.tp-row{display:grid;grid-template-columns:1fr auto;gap:4px 8px;margin-bottom:11px}
+.tp-name{font-size:.79rem;font-weight:600;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
+.tp-cnt{font-family:var(--font-mono);font-size:.7rem;color:var(--muted)}
+.tp-bar{grid-column:1/-1;height:5px;border-radius:99px;background:#e6edf4;overflow:hidden}
+.tp-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--teal-300),var(--teal));transition:width .5s ease}
+.side-submit{width:100%;margin-top:18px;justify-content:center;padding:14px}
+.drawer-close{display:none}
+
+/* ---------- Results ---------- */
+.res-hero{display:grid;grid-template-columns:auto minmax(0,1fr);gap:34px;align-items:center;
+  background:linear-gradient(135deg,#0b2545,#123a63 55%,#0f5d59);color:#eaf3f8;
+  border-radius:20px;padding:34px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.res-hero::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(115deg,rgba(255,255,255,.045) 0 1px,transparent 1px 13px),
+  radial-gradient(500px 260px at 90% 130%,rgba(127,208,198,.3),transparent 70%)}
+.ring-box{position:relative;width:196px;height:196px;z-index:2}
+.ring-box svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.16);stroke-width:13}
+.ring-fill{fill:none;stroke:url(#ringGrad);stroke-width:13;stroke-linecap:round;
+  transition:stroke-dashoffset 1.5s cubic-bezier(.22,.8,.28,1)}
+.ring-txt{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring-txt b{font-family:var(--font-display);font-size:3.1rem;line-height:1;color:#fff}
+.ring-txt small{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.2em;color:var(--teal-300);margin-top:6px}
+.res-copy{position:relative;z-index:2}
+.res-copy .kicker{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--teal-300)}
+.res-copy h2{font-family:var(--font-display);font-size:clamp(1.7rem,3.6vw,2.5rem);margin:8px 0 6px;color:#fff;letter-spacing:-.5px}
+.res-copy .pct{font-size:1.02rem;color:#cfe2ee}
+.res-copy .pct b{font-family:var(--font-display);font-size:1.6rem;color:#fff}
+.grade{display:inline-flex;align-items:center;gap:10px;margin-top:16px;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.24);border-radius:12px;padding:10px 16px}
+.grade .gl{font-family:var(--font-display);font-size:1.9rem;color:#fff;line-height:1}
+.grade .gt{font-size:.78rem;color:#cfe2ee;letter-spacing:.08em;text-transform:uppercase}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:22px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow-sm);
+  position:relative;overflow:hidden;transition:.25s}
+.stat:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.stat::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c,var(--teal-500))}
+.stat b{display:block;font-family:var(--font-display);font-size:2.2rem;color:var(--navy);line-height:1}
+.stat em{font-style:normal;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-top:8px}
+.stat .ar{display:block;font-size:.78rem;color:var(--muted);margin-top:2px;direction:rtl;text-align:right}
+.msg-box{border-radius:14px;padding:20px 22px;border:1px solid;margin-bottom:22px;display:flex;gap:15px;align-items:flex-start}
+.msg-box.good{background:var(--ok-bg);border-color:#b7e2c6;color:#0f5c33}
+.msg-box.mid{background:#fff7e6;border-color:#f2ddb0;color:var(--amber)}
+.msg-box.low{background:var(--bad-bg);border-color:#f2c8cd;color:#8d1f28}
+.msg-box svg{width:26px;height:26px;flex:0 0 auto;margin-top:3px}
+.msg-box .ar{direction:rtl;text-align:right;font-size:1.02rem;font-weight:650;margin:0 0 5px}
+.msg-box .en{font-size:.87rem;opacity:.85;margin:0}
+.two-col{display:grid;grid-template-columns:1.05fr .95fr;gap:22px;align-items:start}
+.bar-row{padding:13px 0;border-bottom:1px dashed var(--line)}
+.bar-row:last-child{border-bottom:0}
+.bar-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:7px}
+.bar-top span{font-size:.9rem;font-weight:600;color:var(--navy)}
+.bar-top em{font-style:normal;font-family:var(--font-mono);font-size:.76rem;color:var(--muted)}
+.bar-track{height:8px;border-radius:99px;background:#e8eff5;overflow:hidden}
+.bar-track i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--navy-500),var(--teal-500));transition:width 1.1s cubic-bezier(.22,.8,.28,1)}
+.res-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+
+/* ---------- Review ---------- */
+.rev-bar{position:sticky;top:0;z-index:35;background:rgba(255,255,255,.94);backdrop-filter:blur(9px);
+  border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:14px 16px;margin-bottom:20px}
+.rev-bar-top{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.rev-title{font-family:var(--font-display);font-size:1.25rem;color:var(--navy);margin:0}
+.rev-title small{font-family:var(--font-body);font-size:.8rem;color:var(--muted);margin-left:9px;font-weight:500}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:#fff;color:var(--navy-700);border-radius:999px;padding:6px 14px;
+  font-size:.78rem;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap}
+.chip:hover{border-color:var(--teal-500);color:var(--teal);transform:translateY(-1px)}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip.on:hover{color:#fff}
+.rev-list{display:grid;gap:15px}
+.rev-card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:20px 22px;box-shadow:var(--shadow-sm);
+  border-left:5px solid var(--line);transition:box-shadow .3s,transform .3s}
+.rev-card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.rev-card.st-correct{border-left-color:#2f9e5f}
+.rev-card.st-wrong{border-left-color:#c9434d}
+.rev-card.st-blank{border-left-color:#c9a227}
+.rev-card.reveal{opacity:0;transform:translateY(18px)}
+.rev-card.reveal.in{opacity:1;transform:none;transition:opacity .55s ease,transform .55s cubic-bezier(.22,.8,.28,1),box-shadow .3s}
+.rev-head{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.rev-num{font-family:var(--font-display);font-weight:700;font-size:1.02rem;color:#fff;background:var(--navy);
+  border-radius:8px;padding:3px 10px;letter-spacing:.5px}
+.rev-q{font-size:1.04rem;font-weight:650;color:var(--navy);margin:0 0 14px;line-height:1.5}
+.rev-opts{display:grid;gap:9px;margin-bottom:14px}
+.rev-opt{display:flex;gap:11px;align-items:flex-start;border:1.5px solid var(--line);border-radius:11px;padding:12px 14px;background:#fbfdfe;font-size:.94rem}
+.rev-opt .k{font-family:var(--font-display);font-weight:700;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  background:#eef3f8;color:var(--navy);flex:0 0 auto;font-size:.85rem}
+.rev-opt .t{flex:1 1 auto;padding-top:2px}
+.rev-opt .badge{font-size:.66rem;font-family:var(--font-mono);letter-spacing:.1em;text-transform:uppercase;
+  border-radius:6px;padding:3px 8px;font-weight:700;white-space:nowrap;align-self:center}
+.rev-opt.correct{border-color:#7fc79c;background:var(--ok-bg)}
+.rev-opt.correct .k{background:#2f9e5f;color:#fff}
+.rev-opt.correct .badge{background:#2f9e5f;color:#fff}
+.rev-opt.wrong{border-color:#e5a0a6;background:var(--bad-bg)}
+.rev-opt.wrong .k{background:#c9434d;color:#fff}
+.rev-opt.wrong .badge{background:#c9434d;color:#fff}
+.rev-exp{background:linear-gradient(180deg,#f4faf9,#eef6f8);border:1px solid #d3e8e4;border-radius:11px;padding:13px 15px;font-size:.9rem;color:#123}
+.rev-exp b{color:var(--teal);font-family:var(--font-mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;display:block;margin-bottom:5px}
+.rev-blank{margin-bottom:12px;font-size:.83rem;color:var(--amber);background:#fff7e6;border:1px dashed #e6cd94;border-radius:9px;padding:9px 13px;display:flex;gap:8px;align-items:center}
+.rev-status{font-size:.72rem;font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;font-weight:700;border-radius:999px;padding:4px 11px}
+.rev-status.c{background:var(--ok-bg);color:var(--ok);border:1px solid #b7e2c6}
+.rev-status.w{background:var(--bad-bg);color:var(--bad);border:1px solid #f2c8cd}
+.rev-status.b{background:#fff7e6;color:var(--amber);border:1px solid #f0dcae}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:15px;padding:44px;text-align:center;color:var(--muted)}
+.empty b{display:block;font-family:var(--font-display);font-size:1.4rem;color:var(--navy);margin-bottom:6px}
+.ico-lg{width:46px;height:46px;margin:0 auto 12px;display:grid;place-items:center;border-radius:50%;background:var(--ok-bg);color:var(--ok)}
+.ico-lg svg{width:24px;height:24px}
+
+/* ---------- Modal / drawer / toast ---------- */
+.modal-bd{position:fixed;inset:0;background:rgba(9,25,45,.55);backdrop-filter:blur(4px);z-index:90;
+  display:grid;place-items:center;padding:20px;animation:fade .25s ease both}
+.modal-bd[hidden]{display:none}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:#fff;border-radius:18px;max-width:490px;width:100%;padding:28px;box-shadow:var(--shadow-lg);
+  animation:pop .35s cubic-bezier(.22,.9,.3,1) both;border-top:5px solid var(--teal-500)}
+@keyframes pop{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
+.modal h3{font-family:var(--font-display);font-size:1.5rem;color:var(--navy);margin:0 0 6px}
+.modal .ar{direction:rtl;text-align:right;font-size:1rem;color:var(--ink);margin:0 0 14px;font-weight:600}
+.modal .cnt-line{display:flex;align-items:center;gap:12px;background:#f4f8fb;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:18px}
+.modal .cnt-line b{font-family:var(--font-display);font-size:2rem;color:var(--navy);line-height:1}
+.modal .cnt-line span{font-size:.84rem;color:var(--muted)}
+.modal-actions{display:flex;gap:10px;flex-wrap:wrap}
+.modal-actions .btn{flex:1 1 170px}
+.drawer-bd{position:fixed;inset:0;background:rgba(9,25,45,.45);z-index:55;animation:fade .25s ease both}
+.drawer-bd[hidden]{display:none}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,140%);z-index:120;
+  background:var(--navy);color:#fff;border-radius:12px;padding:13px 22px;font-size:.9rem;font-weight:600;
+  box-shadow:var(--shadow-lg);transition:transform .45s cubic-bezier(.22,.9,.3,1);max-width:90vw;text-align:center;
+  border-left:4px solid var(--teal-300)}
+.toast.show{transform:translate(-50%,0)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* ---------- Footer ---------- */
+.foot{border-top:1px solid rgba(11,37,69,.14);padding:22px 0 34px;color:var(--muted);font-size:.82rem;
+  display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}
+.foot b{color:var(--navy);font-family:var(--font-display)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1080px){
+  .exam-layout{grid-template-columns:1fr}
+  .cover-grid,.two-col{grid-template-columns:1fr}
+  .nav-toggle{display:inline-flex}
+  .sidebar{position:fixed;top:0;right:0;bottom:0;height:100dvh;width:min(366px,90vw);z-index:60;border-radius:0;
+    transform:translateX(106%);transition:transform .38s cubic-bezier(.3,.9,.3,1);overflow-y:auto;
+    box-shadow:-24px 0 60px rgba(9,25,45,.35)}
+  .sidebar.open{transform:none}
+  .drawer-close{display:inline-flex}
+}
+@media (max-width:720px){
+  .mast-inner{padding:22px 20px;gap:16px}
+  .crest{width:60px;height:68px}
+  .crest b{font-size:1.2rem}
+  .q-head{padding:22px 18px 4px;gap:14px}
+  .q-body{padding:12px 18px 22px}
+  .res-hero{grid-template-columns:1fr;justify-items:center;text-align:center;padding:26px 20px}
+  .ring-box{width:170px;height:170px}
+  .tb-right{flex:1 1 100%;justify-content:space-between}
+  .q-actions .btn{flex:1 1 130px}
+  .panel{padding:20px 18px}
+  .navgrid{grid-template-columns:repeat(8,1fr)}
+  .rev-card{padding:17px 16px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer" aria-hidden="true"></div>
+<span class="drift d1" aria-hidden="true"></span>
+<span class="drift d2" aria-hidden="true"></span>
+<span class="drift d3" aria-hidden="true"></span>
+<span class="drift d4" aria-hidden="true"></span>
+
+<div class="wrap">
+
+  <!-- ===================== MASTHEAD ===================== -->
+  <header class="masthead">
+    <div class="mast-inner">
+      <div class="mast-brand">
+        <div class="crest" aria-hidden="true"><div style="text-align:center"><b>M2</b><br><small>A1 · 60</small></div></div>
+        <div>
+          <h1 class="mast-title">Mobile Application 2</h1>
+          <p class="mast-sub">Assignment 1 — Practice Exam</p>
+        </div>
+      </div>
+      <div class="mast-meta">
+        <span class="mchip"><b>60</b> Questions</span>
+        <span class="mchip"><b>7</b> Topics</span>
+        <span class="mchip"><b>A/B</b> Options</span>
+        <span class="mchip"><b>60</b> Total Marks</span>
+      </div>
+    </div>
+    <div class="rule"></div>
+  </header>
+
+  <!-- ===================== COVER ===================== -->
+  <section id="screen-cover" class="screen">
+    <div class="cover-grid">
+      <div class="panel">
+        <div class="panel-h"><span class="bar"></span><h2>Exam Topics</h2></div>
+        <p class="panel-note">Sixty multiple-choice questions, one mark each, grouped by lecture topic. No negative marking.</p>
+        <div class="facts">
+          <div class="fact"><span>60</span><em>Questions</em></div>
+          <div class="fact"><span>7</span><em>Topics</em></div>
+          <div class="fact"><span>2</span><em>Options / Q</em></div>
+          <div class="fact"><span>1</span><em>Mark each</em></div>
+        </div>
+        <ul class="topics" id="coverTopics"></ul>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><span class="bar"></span><h2>Instructions</h2></div>
+        <p class="panel-note">تعليمات الامتحان التجريبي</p>
+        <ol class="rules">
+          <li>One question is shown at a time — pick <b>A</b> or <b>B</b>.</li>
+          <li>Use <b>Previous</b> / <b>Next</b>, or jump to any question from the number grid.</li>
+          <li>Your answers are kept while you move between questions.</li>
+          <li>The progress bar shows how many questions you have answered.</li>
+          <li>Correct answers are <b>hidden</b> until you press <b>Submit Exam</b>.</li>
+          <li>After submitting you get your score out of <b>60</b>, the percentage, and a full review with explanations.</li>
+          <li>Keyboard: <b>←/→</b> to move, <b>A/B</b> or <b>1/2</b> to answer.</li>
+        </ol>
+        <button class="btn btn-teal big-start" id="btnStart" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+          <span>Start Exam<span class="ar">ابدأ الامتحان</span></span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== EXAM ===================== -->
+  <section id="screen-exam" class="screen" hidden>
+    <div class="exam-topbar">
+      <div class="tb-left">
+        <span class="q-counter">Question <b id="qNum">1</b> <span>of <span id="qTotal">60</span></span></span>
+        <span class="topic-chip" id="topicChip">Firebase and Its Services</span>
+        <span class="trange" id="topicIdx">Topic 1 of 7</span>
+      </div>
+      <div class="tb-right">
+        <span class="timer"><i class="pulse"></i><span id="timerTxt">00:00</span></span>
+        <div class="prog-wrap">
+          <div class="prog"><div class="prog-fill" id="progFill"></div></div>
+          <div class="prog-label"><span id="answeredTxt">0 / 60 answered</span><span id="pctTxt">0%</span></div>
+        </div>
+        <button class="btn btn-ghost nav-toggle" id="navToggle" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          Numbers
+        </button>
+      </div>
+    </div>
+
+    <div class="exam-layout">
+      <!-- Question card -->
+      <div class="q-card" id="qCard">
+        <div class="q-head">
+          <div class="q-bignum" id="qBigNum">01</div>
+          <div class="q-headtxt">
+            <div class="q-tag" id="qTag">Topic 01 · Firebase and Its Services</div>
+            <p class="q-text" id="qText">—</p>
+          </div>
+        </div>
+        <div class="q-body">
+          <div class="opt-group" id="optGroup" role="radiogroup" aria-label="Answer options">
+            <label class="opt" id="optA" for="radioA">
+              <input type="radio" name="answer" id="radioA" value="A">
+              <span class="opt-key">A</span>
+              <span class="opt-text" id="optTextA">—</span>
+            </label>
+            <label class="opt" id="optB" for="radioB">
+              <input type="radio" name="answer" id="radioB" value="B">
+              <span class="opt-key">B</span>
+              <span class="opt-text" id="optTextB">—</span>
+            </label>
+          </div>
+          <div class="q-actions">
+            <button class="btn btn-ghost" id="btnPrev" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+              <span>Previous<span class="ar">السابق</span></span>
+            </button>
+            <span class="q-hint"><kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>A</kbd>/<kbd>B</kbd> answer</span>
+            <button class="btn btn-danger" id="btnSubmitInline" type="button" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              <span>Submit Exam<span class="ar">تسليم الامتحان</span></span>
+            </button>
+            <button class="btn btn-primary" id="btnNext" type="button">
+              <span>Next<span class="ar">التالي</span></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="sidebar" id="drawer" aria-label="Question navigator">
+        <div class="side-h">
+          <h3>Question Navigator</h3>
+          <button class="btn btn-ghost drawer-close" id="drawerClose" type="button" style="padding:6px 10px">✕</button>
+        </div>
+        <div class="navgrid" id="navGrid"></div>
+        <div class="legend">
+          <span class="l-cur"><i></i>Current</span>
+          <span class="l-ans"><i></i>Answered</span>
+          <span><i></i>Unanswered</span>
+          <span class="cnt" id="navCount" style="margin-left:auto"></span>
+        </div>
+        <div class="side-h" style="margin-bottom:12px"><h3 style="font-size:1rem">Topic Progress</h3></div>
+        <div id="topicList"></div>
+        <button class="btn btn-danger side-submit" id="btnSubmit" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          <span>Submit Exam<span class="ar">تسليم الامتحان</span></span>
+        </button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===================== RESULTS ===================== -->
+  <section id="screen-results" class="screen" hidden>
+    <div class="res-hero">
+      <div class="ring-box">
+        <svg width="196" height="196" viewBox="0 0 196 196" aria-hidden="true">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7fd0c6"/><stop offset="55%" stop-color="#12a193"/><stop offset="100%" stop-color="#8fb9dd"/>
+            </linearGradient>
+          </defs>
+          <circle class="ring-bg" cx="98" cy="98" r="82"></circle>
+          <circle class="ring-fill" id="ringFill" cx="98" cy="98" r="82" stroke-dasharray="515.22" stroke-dashoffset="515.22"></circle>
+        </svg>
+        <div class="ring-txt">
+          <div><b id="scoreNum">0</b><span style="font-family:var(--font-display);font-size:1.4rem;color:#cfe2ee"> / 60</span></div>
+          <small id="scorePct">0%</small>
+        </div>
+      </div>
+      <div class="res-copy">
+        <div class="kicker">Result · النتيجة</div>
+        <h2 id="resHeadline">Your Score</h2>
+        <p class="pct">You answered <b id="resCorrectTxt">0</b> out of 60 questions correctly.</p>
+        <div class="grade"><span class="gl" id="gradeLetter">—</span><span class="gt" id="gradeTxt">Grade</span></div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat" style="--c:#2f9e5f"><b id="statCorrect">0</b><em>Correct</em><span class="ar">إجابات صحيحة</span></div>
+      <div class="stat" style="--c:#c9434d"><b id="statWrong">0</b><em>Incorrect</em><span class="ar">إجابات خاطئة</span></div>
+      <div class="stat" style="--c:#c9a227"><b id="statBlank">0</b><em>Unanswered</em><span class="ar">بدون إجابة</span></div>
+      <div class="stat" style="--c:#2d5f8f"><b id="statTime">00:00</b><em>Time Spent</em><span class="ar">الوقت المستغرق</span></div>
+    </div>
+
+    <div class="msg-box" id="msgBox">
+      <svg id="msgIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      <div>
+        <p class="ar" id="msgAr">—</p>
+        <p class="en" id="msgEn">—</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-h"><span class="bar"></span><h2>Performance by Topic</h2></div>
+        <p class="panel-note">الأداء حسب الموضوع — راجع المواضيع الضعيفة قبل إعادة المحاولة.</p>
+        <div id="topicBars"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><span class="bar"></span><h2>Marking Summary</h2></div>
+        <p class="panel-note">Each question = 1 mark · no deduction for wrong answers.</p>
+        <ul class="rules" style="margin-bottom:6px">
+          <li>Correct: <b id="sumCorrect">0</b> × 1 = <b id="sumMarks">0</b> marks</li>
+          <li>Incorrect: <b id="sumWrong">0</b> × 0 = 0 marks</li>
+          <li>Unanswered: <b id="sumBlank">0</b> × 0 = 0 marks</li>
+          <li>Final score: <b id="sumFinal">0 / 60</b> · Percentage: <b id="sumPct">0%</b></li>
+        </ul>
+        <div class="res-actions" style="margin-top:16px">
+          <button class="btn btn-primary" id="btnReviewAll" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4zM4 10h16M9 5v14"/></svg>
+            <span>Review All Answers<span class="ar">مراجعة كل الأسئلة</span></span>
+          </button>
+          <button class="btn btn-ghost" id="btnReviewWrong" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>
+            <span>Review Incorrect Answers<span class="ar">مراجعة الأخطاء فقط</span></span>
+          </button>
+          <button class="btn btn-teal" id="btnRetake1" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+            <span>Retake Exam<span class="ar">إعادة الامتحان</span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== REVIEW ===================== -->
+  <section id="screen-review" class="screen" hidden>
+    <div class="rev-bar">
+      <div class="rev-bar-top">
+        <h2 class="rev-title">Answer Review <small id="reviewCount"></small></h2>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-ghost" id="btnBackResults" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span>Back to Results<span class="ar">العودة للنتيجة</span></span>
+          </button>
+          <button class="btn btn-teal" id="btnRetake2" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+            <span>Retake Exam</span>
+          </button>
+        </div>
+      </div>
+      <div class="chips" id="scopeChips" style="margin-bottom:9px">
+        <button class="chip on" data-scope="all" type="button">All Questions (60)</button>
+        <button class="chip" data-scope="wrong" type="button">Incorrect &amp; Unanswered</button>
+        <button class="chip" data-scope="correct" type="button">Correct Only</button>
+      </div>
+      <div class="chips" id="topicChips"></div>
+    </div>
+    <div class="rev-list" id="revList"></div>
+  </section>
+
+  <footer class="foot">
+    <span><b>Mobile Application 2</b> · Assignment 1 Practice Exam · 60 MCQs</span>
+    <span>Offline single-file · HTML + CSS + Vanilla JavaScript</span>
+  </footer>
+</div>
+
+<!-- Confirm modal -->
+<div class="modal-bd" id="modal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">Submit Exam?</h3>
+    <p class="ar" id="modalAr">هل تريد تسليم الامتحان الآن؟</p>
+    <div class="cnt-line">
+      <b id="modalUnanswered">0</b>
+      <span id="modalSub">questions left unanswered.<br>لم تُجب عن هذا العدد من الأسئلة.</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="btnModalBack" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Back to Exam<span class="ar">العودة لإكمال الأسئلة</span></span>
+      </button>
+      <button class="btn btn-danger" id="btnModalSubmit" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        <span>Submit Anyway<span class="ar">تسليم على أي حال</span></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="drawer-bd" id="drawerBd" hidden></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   QUESTION BANK — 60 MCQs (exactly as provided)
+   ============================================================ */
+const questions = [
+  {n:1,topic:"Firebase and Its Services",q:"A developer wants users to access their saved information from different devices. Which service is suitable?",A:"Firebase Realtime Database",B:"Firebase Hosting",answer:"A"},
+  {n:2,topic:"Firebase and Its Services",q:"An app needs to store profile pictures online. Which service is the best choice?",A:"Firebase Authentication",B:"Cloud Storage for Firebase",answer:"B"},
+  {n:3,topic:"Firebase and Its Services",q:"A developer wants to send notifications when an app is closed. Which service can help?",A:"Firebase Cloud Messaging",B:"Firebase Hosting",answer:"A"},
+  {n:4,topic:"Firebase and Its Services",q:"A team wants to understand how many people use its app. Which service is suitable?",A:"Firebase Storage",B:"Firebase Analytics",answer:"B"},
+  {n:5,topic:"Firebase and Its Services",q:"An app crashes, and the development team wants to investigate the cause. Which service can help?",A:"Firebase Crashlytics",B:"Firebase Hosting",answer:"A"},
+  {n:6,topic:"Firebase and Its Services",q:"Does Firebase automatically create every screen and feature of a Flutter app?",A:"Yes, Firebase creates the complete app",B:"No, developers must still build the app",answer:"B"},
+  {n:7,topic:"Firebase and Its Services",q:"A developer needs to publish a website using Firebase. Which service should be used?",A:"Firebase Realtime Database",B:"Firebase Hosting",answer:"B"},
+  {n:8,topic:"Firebase and Its Services",q:"Why might a developer choose Firebase instead of building every backend service from scratch?",A:"It provides ready-made backend services",B:"It removes the need to write frontend code",answer:"A"},
+  {n:9,topic:"Backend-as-a-Service (BaaS)",q:"A small team needs a database and user login without building a complete backend server. Which approach is suitable?",A:"BaaS",B:"Building every backend service from scratch",answer:"A"},
+  {n:10,topic:"Backend-as-a-Service (BaaS)",q:"What is the main purpose of BaaS?",A:"To design app screens automatically",B:"To provide ready-made backend services",answer:"B"},
+  {n:11,topic:"Backend-as-a-Service (BaaS)",q:"A Flutter app uses a BaaS database. Does it still need to communicate with the service to access data?",A:"Yes, it must send requests through the available service or API",B:"No, data appears automatically without communication",answer:"A"},
+  {n:12,topic:"Backend-as-a-Service (BaaS)",q:"How can BaaS help a small development team?",A:"It removes the need to program the app",B:"It reduces the amount of backend work",answer:"B"},
+  {n:13,topic:"Backend-as-a-Service (BaaS)",q:"Which statement correctly describes Firebase?",A:"Firebase is an example of a BaaS platform",B:"BaaS is only a database feature inside Firebase",answer:"A"},
+  {n:14,topic:"Backend-as-a-Service (BaaS)",q:"A company needs a feature that its BaaS provider does not offer. What can it do?",A:"Stop using programming languages",B:"Build an additional service or use another solution",answer:"B"},
+  {n:15,topic:"Backend-as-a-Service (BaaS)",q:"Does using BaaS guarantee that an application is completely secure?",A:"No, developers must configure security correctly",B:"Yes, security is automatic and never requires attention",answer:"A"},
+  {n:16,topic:"Backend-as-a-Service (BaaS)",q:"What is one possible disadvantage of depending heavily on a single BaaS provider?",A:"The app cannot have a user interface",B:"Moving to another provider may require changes",answer:"B"},
+  {n:17,topic:"Authentication",q:"What is the main purpose of Firebase Authentication?",A:"Managing user registration and sign-in",B:"Hosting images and videos only",answer:"A"},
+  {n:18,topic:"Authentication",q:"A mobile app allows registration using an email and password. Which feature should the developer configure?",A:"Firebase Hosting",B:"Firebase Authentication",answer:"B"},
+  {n:19,topic:"Authentication",q:"An app sends a verification code to a user's phone during sign-in. Which method is being used?",A:"Phone authentication with OTP verification",B:"Database authentication using product records",answer:"A"},
+  {n:20,topic:"Authentication",q:"A developer wants users to sign in with their Google accounts. What is required?",A:"Firebase Hosting only",B:"Firebase Authentication with Google sign-in",answer:"B"},
+  {n:21,topic:"Authentication",q:"Does signing in automatically give a user permission to read every database record?",A:"Yes, all signed-in users can access every record",B:"No, database security rules must control access",answer:"B"},
+  {n:22,topic:"Authentication",q:"An app remembers that a user has already signed in. What is the main benefit?",A:"A more convenient sign-in experience",B:"The app no longer needs to protect user data",answer:"A"},
+  {n:23,topic:"Authentication",q:"Why should an application avoid storing plain-text passwords in its own database?",A:"Attackers could read them if the database is exposed",B:"They make buttons load slowly",answer:"A"},
+  {n:24,topic:"Authentication",q:"Which group contains three common authentication methods?",A:"GET, POST, and DELETE",B:"Email/password, social sign-in, and phone authentication",answer:"B"},
+  {n:25,topic:"Authentication",q:"An application has many registered users. What is one advantage of Firebase Authentication?",A:"It helps manage user authentication without building the complete system from scratch",B:"It guarantees that security problems can never occur",answer:"A"},
+  {n:26,topic:"Firebase AI Logic",q:"A developer wants to add an AI chatbot to a Flutter application. Which tool is relevant?",A:"Firebase Hosting only",B:"Firebase AI Logic",answer:"B"},
+  {n:27,topic:"Firebase AI Logic",q:"A user enters, “Explain photosynthesis in simple words.” What is this text called when sent to an AI model?",A:"A prompt",B:"A database rule",answer:"A"},
+  {n:28,topic:"Firebase AI Logic",q:"What is the main role of Firebase AI Logic in a Flutter application?",A:"To replace Flutter's user interface",B:"To help integrate generative AI models into the application",answer:"B"},
+  {n:29,topic:"Firebase AI Logic",q:"A developer wants an AI feature to summarize students' notes. Which task is suitable for a generative AI model?",A:"Generating a summary from the supplied text",B:"Automatically repairing the phone's hardware",answer:"A"},
+  {n:30,topic:"Firebase AI Logic",q:"An AI model produces an answer containing a false fact. What should the developer understand?",A:"AI answers are always correct if they sound convincing",B:"AI answers can contain mistakes and need evaluation",answer:"B"},
+  {n:31,topic:"Firebase AI Logic",q:"A developer sends private user information to an AI model without a clear reason. What is the main concern?",A:"User privacy and data protection",B:"The app icon's size",answer:"A"},
+  {n:32,topic:"Firebase AI Logic",q:"A Flutter application needs AI responses in a format its code can process reliably. What should the developer request?",A:"An answer with no formatting instructions",B:"A structured format such as JSON",answer:"B"},
+  {n:33,topic:"Firebase AI Logic",q:"Why should an AI feature be tested before release?",A:"To check answer quality, errors, and user experience",B:"To guarantee that the feature will never need an internet connection",answer:"A"},
+  {n:34,topic:"Firebase AI Logic",q:"A developer wants faster responses for a simple mobile chatbot. Which model from the lecture is designed for speed?",A:"Gemini 2.5 Pro",B:"Gemini 2.5 Flash",answer:"B"},
+  {n:35,topic:"Firebase AI Logic",q:"An AI feature receives too many requests and becomes expensive. What is a sensible response?",A:"Add usage limits and monitor costs",B:"Allow unlimited requests without monitoring usage",answer:"A"},
+  {n:36,topic:"Firebase AI Logic",q:"A developer wants to build an AI assistant in Flutter. Which package is used in the lecture to integrate Firebase AI?",A:"firebase_ai",B:"firebase_hosting",answer:"A"},
+  {n:37,topic:"Firebase AI Logic",q:"Why should an application validate an AI prompt before sending it?",A:"To guarantee every AI response is correct",B:"To prevent empty input from generating unnecessary requests",answer:"B"},
+  {n:38,topic:"Firebase AI Logic",q:"An AI request fails because the internet connection is lost. What should the app do?",A:"Handle the error and show a useful message",B:"Display a success message even though no response arrived",answer:"A"},
+  {n:39,topic:"API Basics and HTTP Methods",q:"What does API stand for?",A:"Application Programming Interface",B:"Application Process Integration",answer:"A"},
+  {n:40,topic:"API Basics and HTTP Methods",q:"What is the main purpose of an API?",A:"To design the user interface",B:"To allow software systems to communicate",answer:"B"},
+  {n:41,topic:"API Basics and HTTP Methods",q:"A shopping app uses an online payment service. How can it communicate with that service?",A:"Through an API",B:"Through an APK file alone",answer:"A"},
+  {n:42,topic:"API Basics and HTTP Methods",q:"An app needs to display a list of products from a server. Which HTTP method is usually suitable?",A:"POST",B:"GET",answer:"B"},
+  {n:43,topic:"API Basics and HTTP Methods",q:"A user submits a new comment to a server. Which HTTP method is commonly used?",A:"POST",B:"GET",answer:"A"},
+  {n:44,topic:"API Basics and HTTP Methods",q:"A developer needs to replace an entire existing product record. Which method is commonly used?",A:"PATCH",B:"PUT",answer:"B"},
+  {n:45,topic:"API Basics and HTTP Methods",q:"A user changes only a product's price and leaves its other details unchanged. Which method is most suitable?",A:"PATCH",B:"PUT",answer:"A"},
+  {n:46,topic:"API Basics and HTTP Methods",q:"A user deletes a saved comment. Which HTTP method is commonly used?",A:"POST",B:"DELETE",answer:"B"},
+  {n:47,topic:"API Basics and HTTP Methods",q:"What is the common difference between PUT and PATCH?",A:"PUT usually replaces a resource, while PATCH changes part of it",B:"PUT reads data, while PATCH deletes data",answer:"A"},
+  {n:48,topic:"API Basics and HTTP Methods",q:"A Flutter developer already uses the HTTP package. Must they also use Dio to make API requests?",A:"Yes, both packages are always required",B:"No, either package can be used",answer:"B"},
+  {n:49,topic:"API Basics and HTTP Methods",q:"An API returns status code 404. What does this usually mean?",A:"The requested resource was not found",B:"The request was definitely successful",answer:"A"},
+  {n:50,topic:"API Basics and HTTP Methods",q:"An API returns JSON data. Why is JSON useful?",A:"It automatically creates application screens",B:"It provides a structured way to exchange data",answer:"B"},
+  {n:51,topic:"API Keys and Security",q:"An API service requires a key with each request. What is one common purpose of the key?",A:"To help identify the application or control access",B:"To replace all network security",answer:"A"},
+  {n:52,topic:"API Keys and Security",q:"A developer accidentally publishes a sensitive API key in a public repository. What is the main risk?",A:"The app's text becomes smaller",B:"Other people may copy and misuse the key",answer:"B"},
+  {n:53,topic:"API Keys and Security",q:"A service allows an API key to be restricted to particular services. Why is this useful?",A:"It can limit how the key is used if exposed",B:"It makes the key impossible to steal",answer:"A"},
+  {n:54,topic:"API Keys and Security",q:"A developer discovers that a secret API key has been shared publicly. What should they do?",A:"Leave the key unchanged",B:"Replace or disable the key and check for misuse",answer:"B"},
+  {n:55,topic:"API Keys and Security",q:"Can someone potentially extract a key embedded in a distributed mobile app?",A:"Yes, keys included in an app may be extracted",B:"No, application code can never be examined",answer:"A"},
+  {n:56,topic:"API Keys and Security",q:"Where should a sensitive secret key used for server-side requests normally be kept?",A:"In a public file inside the mobile app",B:"In a secure server environment",answer:"B"},
+  {n:57,topic:"HTTPS Requests in Flutter",q:"Why should an app use HTTPS instead of plain HTTP when the service supports it?",A:"HTTPS guarantees that all API responses are correct",B:"HTTPS protects data while it travels between the app and server",answer:"B"},
+  {n:58,topic:"HTTPS Requests in Flutter",q:"A Flutter app receives JSON text from an API. What should the developer commonly do before using its values as Dart data?",A:"Decode the JSON",B:"Convert the response into an image",answer:"A"},
+  {n:59,topic:"HTTPS Requests in Flutter",q:"A Flutter app receives status code 500 from an API. What does this usually indicate?",A:"The request was definitely successful",B:"A server-side error occurred",answer:"B"},
+  {n:60,topic:"HTTPS Requests in Flutter",q:"A Flutter app needs to call an external AI service using a sensitive secret key. Which design is generally safer?",A:"Put the secret key directly in the app and hide its text on screen",B:"Send the request through a secure backend that protects the key",answer:"B"}
+];
+
+/* Short English explanation for each question (index = question number) */
+const explanations = [
+  "Firebase Realtime Database stores user data in the cloud and syncs it, so users can reach their saved information from different devices.",
+  "Cloud Storage for Firebase is designed for storing files such as images, audio and video — ideal for profile pictures.",
+  "Firebase Cloud Messaging (FCM) delivers push notifications to devices even when the application is closed.",
+  "Firebase Analytics collects data about how users discover and use the app, which answers 'how many people use it'.",
+  "Firebase Crashlytics records crashes with stack traces and details, helping the team investigate the cause.",
+  "Firebase supplies backend services only; the developer must still build the Flutter screens and app logic.",
+  "Firebase Hosting publishes static and dynamic web content, so it is the service used to publish a website.",
+  "Firebase provides ready-made backend services (database, auth, storage, messaging), saving time and infrastructure work.",
+  "BaaS provides a ready database and user authentication without the team building a complete backend server.",
+  "The main purpose of BaaS is to provide ready-made backend services to applications.",
+  "The app still has to communicate — it sends requests through the SDK or API to read and write data.",
+  "BaaS reduces the amount of backend work, which is valuable for a small team with limited time.",
+  "Firebase is a well-known example of a BaaS platform, not the other way round.",
+  "When a needed feature is missing, the team builds an additional service or uses another solution.",
+  "Security is not automatic: developers must configure rules, keys and permissions correctly.",
+  "Depending heavily on one provider creates lock-in — migrating later may require many changes.",
+  "Firebase Authentication manages user registration, sign-in and identity for the app.",
+  "Email and password registration is a sign-in provider configured in Firebase Authentication.",
+  "Sending a code by SMS and verifying it is phone authentication with OTP verification.",
+  "Google sign-in is enabled as a provider inside Firebase Authentication.",
+  "Signing in only proves identity; database security rules decide which records a user may read or write.",
+  "A remembered session removes repeated sign-in steps, giving a more convenient user experience.",
+  "If the database is exposed, plain-text passwords can be read and reused directly by attackers.",
+  "The three common authentication methods are email/password, social sign-in and phone authentication.",
+  "Firebase Authentication handles the authentication system so developers do not build it entirely from scratch.",
+  "Firebase AI Logic is the Firebase tool for adding generative AI features such as a chatbot to an app.",
+  "The text a user sends to an AI model to request a response is called a prompt.",
+  "Its main role is to help integrate generative AI models into the Flutter application.",
+  "Producing a summary from supplied text is a typical generative AI task.",
+  "AI output can contain mistakes (hallucinations), so answers must be evaluated rather than trusted blindly.",
+  "Sending private user data without a clear reason raises user privacy and data protection concerns.",
+  "Requesting a structured format such as JSON makes the response reliable for the code to parse.",
+  "Testing before release checks answer quality, error handling and the overall user experience.",
+  "Gemini 2.5 Flash is the model designed for fast, lightweight responses such as a simple chatbot.",
+  "Adding usage limits and monitoring costs is the sensible way to control expensive AI usage.",
+  "The firebase_ai package is used in the lecture to integrate Firebase AI in Flutter.",
+  "Validating the prompt prevents empty or invalid input from generating unnecessary requests and cost.",
+  "The app should handle the failure and show a useful message instead of pretending it succeeded.",
+  "API stands for Application Programming Interface.",
+  "An API allows different software systems to communicate and exchange data.",
+  "Communication with an external payment service happens through the API that service provides.",
+  "GET is the HTTP method used to retrieve/read data such as a list of products.",
+  "POST is commonly used to send and create new data on the server, such as a comment.",
+  "PUT is commonly used to replace an entire existing resource.",
+  "PATCH updates only part of a resource, so changing just the price is a PATCH operation.",
+  "DELETE is the HTTP method used to remove a resource such as a saved comment.",
+  "PUT usually replaces the whole resource, while PATCH modifies only part of it.",
+  "Either the http package or Dio can be used — both are not required at the same time.",
+  "Status 404 (Not Found) means the requested resource could not be found on the server.",
+  "JSON provides a structured, language-independent way to exchange data between systems.",
+  "An API key helps identify the calling application and control access to the service.",
+  "A publicly exposed key can be copied and misused by others, possibly at your expense.",
+  "Restricting a key limits what it can do, reducing the damage if it is ever exposed.",
+  "The correct action is to replace or disable the leaked key and check for misuse.",
+  "Anything embedded in a distributed mobile app can potentially be extracted and inspected.",
+  "Sensitive secret keys used for server-side calls belong in a secure server environment, never in the app.",
+  "HTTPS encrypts data in transit, protecting it between the app and the server.",
+  "JSON text must be decoded (parsed) into Dart objects before its values can be used.",
+  "Status 500 (Internal Server Error) indicates a server-side error occurred.",
+  "Routing the request through a secure backend keeps the secret key out of the distributed app."
+];
+
+/* ============================================================
+   TOPICS + STATE
+   ============================================================ */
+const TOPICS = [
+  {name:"Firebase and Its Services", from:1, to:8},
+  {name:"Backend-as-a-Service (BaaS)", from:9, to:16},
+  {name:"Authentication", from:17, to:25},
+  {name:"Firebase AI Logic", from:26, to:38},
+  {name:"API Basics and HTTP Methods", from:39, to:50},
+  {name:"API Keys and Security", from:51, to:56},
+  {name:"HTTPS Requests in Flutter", from:57, to:60}
+];
+const TOTAL = questions.length; /* 60 */
+
+const state = {
+  started:false,
+  submitted:false,
+  idx:0,
+  answers:new Array(TOTAL).fill(null),
+  seconds:0,
+  timerId:null,
+  result:null,
+  review:{scope:"all", topic:"all"}
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const pad2 = n => String(n).padStart(2,"0");
+const fmtTime = s => pad2(Math.floor(s/60)) + ":" + pad2(s%60);
+const topicIndexOf = t => TOPICS.findIndex(x => x.name === t);
+
+/* ============================================================
+   SCREEN MANAGEMENT
+   ============================================================ */
+function showScreen(id){
+  ["screen-cover","screen-exam","screen-results","screen-review"].forEach(s=>{
+    const el = $(s);
+    el.hidden = (s !== id);
+    if(s === id){ el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); }
+  });
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ============================================================
+   COVER
+   ============================================================ */
+function renderCover(){
+  $("coverTopics").innerHTML = TOPICS.map((t,i)=>`
+    <li>
+      <span class="tnum">T${pad2(i+1)}</span>
+      <span class="tname">${esc(t.name)}</span>
+      <span class="trange">Q${t.from}–Q${t.to} · ${t.to-t.from+1} Q</span>
+    </li>`).join("");
+}
+
+/* ============================================================
+   EXAM RENDERING
+   ============================================================ */
+function renderQuestion(dir){
+  const i = state.idx;
+  const q = questions[i];
+  $("qNum").textContent = q.n;
+  $("qTotal").textContent = TOTAL;
+  $("qBigNum").textContent = pad2(q.n);
+  $("topicChip").textContent = q.topic;
+  $("topicIdx").textContent = `Topic ${topicIndexOf(q.topic)+1} of ${TOPICS.length}`;
+  $("qTag").textContent = `Topic ${pad2(topicIndexOf(q.topic)+1)} · ${q.topic}`;
+  $("qText").textContent = q.q;
+  $("optTextA").textContent = q.A;
+  $("optTextB").textContent = q.B;
+
+  const a = state.answers[i];
+  $("radioA").checked = (a === "A");
+  $("radioB").checked = (a === "B");
+  $("optA").classList.toggle("sel", a === "A");
+  $("optB").classList.toggle("sel", a === "B");
+
+  $("btnPrev").disabled = (i === 0);
+  const isLast = (i === TOTAL-1);
+  $("btnNext").style.display = isLast ? "none" : "";
+  $("btnSubmitInline").hidden = !isLast;
+  if(isLast && !state.submitted){
+    const left = state.answers.filter(v=>!v).length;
+    $("btnSubmitInline").querySelector(".ar").textContent =
+      left === 0 ? "تسليم الامتحان" : ("تسليم — متبقٍ " + left);
+  }
+
+  /* entrance animation */
+  const card = $("qCard");
+  card.classList.remove("q-anim-fwd","q-anim-back");
+  void card.offsetWidth;
+  card.classList.add(dir === -1 ? "q-anim-back" : "q-anim-fwd");
+}
+
+function buildNavGrid(){
+  const g = $("navGrid");
+  g.innerHTML = "";
+  for(let i=0;i<TOTAL;i++){
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "nbtn";
+    b.textContent = i+1;
+    b.setAttribute("aria-label","Go to question "+(i+1));
+    b.addEventListener("click",()=>{ closeDrawer(); goTo(i); });
+    g.appendChild(b);
+  }
+}
+
+function renderNav(){
+  const btns = $("navGrid").children;
+  for(let i=0;i<TOTAL;i++){
+    const b = btns[i];
+    b.classList.toggle("answered", !!state.answers[i]);
+    b.classList.toggle("current", i === state.idx);
+  }
+  $("navCount").textContent = state.answers.filter(Boolean).length + " / " + TOTAL;
+}
+
+function buildTopicList(){
+  $("topicList").innerHTML = TOPICS.map((t,i)=>`
+    <div class="tp-row">
+      <span class="tp-name">${i+1}. ${esc(t.name)}</span>
+      <span class="tp-cnt" id="tpCnt${i}">0/${t.to-t.from+1}</span>
+      <span class="tp-bar"><i id="tpBar${i}"></i></span>
+    </div>`).join("");
+}
+
+function renderTopicList(){
+  TOPICS.forEach((t,i)=>{
+    let done = 0;
+    for(let n=t.from;n<=t.to;n++) if(state.answers[n-1]) done++;
+    const total = t.to - t.from + 1;
+    $("tpCnt"+i).textContent = done + "/" + total;
+    $("tpBar"+i).style.width = (done/total*100) + "%";
+  });
+}
+
+function updateProgress(){
+  const done = state.answers.filter(Boolean).length;
+  const pct = Math.round(done/TOTAL*100);
+  $("progFill").style.width = pct + "%";
+  $("answeredTxt").textContent = done + " / " + TOTAL + " answered";
+  $("pctTxt").textContent = pct + "%";
+  renderNav();
+  renderTopicList();
+  if(state.idx === TOTAL-1 && !state.submitted){
+    const left = TOTAL - done;
+    $("btnSubmitInline").querySelector(".ar").textContent =
+      left === 0 ? "تسليم الامتحان" : ("تسليم — متبقٍ " + left);
+  }
+}
+
+function goTo(i){
+  if(i<0 || i>=TOTAL) return;
+  const dir = i < state.idx ? -1 : 1;
+  state.idx = i;
+  renderQuestion(dir);
+  renderNav();
+  if(window.innerWidth <= 1080){
+    $("qCard").scrollIntoView({behavior:"smooth", block:"start"});
+  }
+}
+const next = () => goTo(state.idx+1);
+const prev = () => goTo(state.idx-1);
+
+function selectAnswer(key){
+  if(state.submitted) return;
+  state.answers[state.idx] = key;
+  $("radioA").checked = (key === "A");
+  $("radioB").checked = (key === "B");
+  $("optA").classList.toggle("sel", key === "A");
+  $("optB").classList.toggle("sel", key === "B");
+  updateProgress();
+  /* small tactile feedback */
+  const el = key === "A" ? $("optA") : $("optB");
+  el.animate([{transform:"translateY(-2px) scale(1)"},{transform:"translateY(-2px) scale(1.012)"},{transform:"translateY(-2px) scale(1)"}],{duration:230,easing:"ease-out"});
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function startTimer(){
+  stopTimer();
+  state.timerId = setInterval(()=>{
+    state.seconds++;
+    $("timerTxt").textContent = fmtTime(state.seconds);
+  },1000);
+}
+function stopTimer(){ if(state.timerId){ clearInterval(state.timerId); state.timerId = null; } }
+
+/* ============================================================
+   DRAWER (mobile navigator)
+   ============================================================ */
+function openDrawer(){ $("drawer").classList.add("open"); $("drawerBd").hidden = false; }
+function closeDrawer(){ $("drawer").classList.remove("open"); $("drawerBd").hidden = true; }
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+let toastT = null;
+function toast(msg){
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastT);
+  toastT = setTimeout(()=>t.classList.remove("show"), 2600);
+}
+
+/* ============================================================
+   SUBMIT + RESULTS
+   ============================================================ */
+function openConfirm(){
+  if(state.submitted) return;
+  const unanswered = state.answers.filter(v=>!v).length;
+  $("modalUnanswered").textContent = unanswered;
+  if(unanswered === 0){
+    $("modalAr").textContent = "أجبت عن جميع الأسئلة الستين. هل تريد تسليم الامتحان؟";
+    $("modalSub").innerHTML = "questions left unanswered — all 60 are complete.<br>أجبت عن كل الأسئلة، يمكنك التسليم الآن.";
+    $("modalUnanswered").textContent = "0";
+  }else{
+    $("modalAr").textContent = "ما زالت هناك أسئلة بدون إجابة. هل تريد التسليم رغم ذلك؟";
+    $("modalSub").innerHTML = "questions left unanswered — every question counts in the score.<br>يمكنك العودة لإكمالها أو التسليم رغم النقص.";
+  }
+  $("modal").hidden = false;
+  $("btnModalBack").focus();
+}
+function closeConfirm(){ $("modal").hidden = true; }
+
+function computeResults(){
+  let correct = 0, wrong = 0, blank = 0;
+  const byTopic = TOPICS.map(t=>({name:t.name, total:t.to-t.from+1, correct:0, wrong:0, blank:0}));
+  questions.forEach((q,i)=>{
+    const a = state.answers[i];
+    const ti = topicIndexOf(q.topic);
+    if(!a){ blank++; byTopic[ti].blank++; }
+    else if(a === q.answer){ correct++; byTopic[ti].correct++; }
+    else { wrong++; byTopic[ti].wrong++; }
+  });
+  return {
+    correct, wrong, blank,
+    score: correct,
+    percent: Math.round(correct/TOTAL*1000)/10,
+    byTopic
+  };
+}
+
+function gradeFor(pct){
+  if(pct >= 90) return {l:"A", en:"Excellent", ar:"ممتاز"};
+  if(pct >= 80) return {l:"B", en:"Very Good", ar:"جيد جدًا"};
+  if(pct >= 70) return {l:"C", en:"Good", ar:"جيد"};
+  if(pct >= 60) return {l:"D", en:"Pass", ar:"مقبول"};
+  return {l:"F", en:"Needs Review", ar:"يحتاج مراجعة"};
+}
+
+function submitExam(){
+  closeConfirm();
+  stopTimer();
+  state.submitted = true;
+  closeDrawer();
+  const r = computeResults();
+  state.result = r;
+  renderResults(r);
+  showScreen("screen-results");
+  toast("تم تسليم الامتحان — النتيجة " + r.score + " / " + TOTAL);
+}
+
+function countUp(el, to, suffix, dur){
+  suffix = suffix || "";
+  dur = dur || 900;
+  const start = performance.now();
+  const from = 0;
+  function tick(now){
+    const p = Math.min(1,(now-start)/dur);
+    const e = 1 - Math.pow(1-p,3);
+    const val = Math.round(from + (to-from)*e*10)/10;
+    el.textContent = (Number.isInteger(to) ? Math.round(val) : val.toFixed(1)) + suffix;
+    if(p<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function renderResults(r){
+  const pct = r.percent;
+  const g = gradeFor(pct);
+
+  /* ring */
+  const circ = 2 * Math.PI * 82;
+  const ring = $("ringFill");
+  ring.setAttribute("stroke-dasharray", circ.toFixed(2));
+  ring.setAttribute("stroke-dashoffset", circ.toFixed(2));
+  requestAnimationFrame(()=>{
+    ring.style.strokeDashoffset = (circ * (1 - pct/100)).toFixed(2);
+  });
+
+  countUp($("scoreNum"), r.score, "");
+  $("scorePct").textContent = (Number.isInteger(pct)? pct : pct.toFixed(1)) + "%";
+  $("resCorrectTxt").textContent = r.correct;
+  $("gradeLetter").textContent = g.l;
+  $("gradeTxt").textContent = g.en + " · " + g.ar;
+
+  $("resHeadline").textContent = pct >= 60 ? "You Passed the Practice Exam" : "Practice Exam Completed";
+
+  $("statCorrect").textContent = r.correct;
+  $("statWrong").textContent = r.wrong;
+  $("statBlank").textContent = r.blank;
+  $("statTime").textContent = fmtTime(state.seconds);
+
+  $("sumCorrect").textContent = r.correct;
+  $("sumMarks").textContent = r.correct;
+  $("sumWrong").textContent = r.wrong;
+  $("sumBlank").textContent = r.blank;
+  $("sumFinal").textContent = r.score + " / " + TOTAL;
+  $("sumPct").textContent = (Number.isInteger(pct)? pct : pct.toFixed(1)) + "%";
+
+  /* message */
+  const box = $("msgBox");
+  box.className = "msg-box " + (pct >= 80 ? "good" : pct >= 50 ? "mid" : "low");
+  let ar, en;
+  if(pct >= 90){ ar = "أداء ممتاز! إتقان واضح لمحتوى Assignment 1."; en = "Excellent work — you clearly mastered Firebase, BaaS, authentication, AI Logic and APIs."; }
+  else if(pct >= 75){ ar = "عمل جيد جدًا — راجع الأسئلة الخاطئة لتصل إلى الامتياز."; en = "Very good result. Review the incorrect answers below to close the remaining gaps."; }
+  else if(pct >= 60){ ar = "نتيجة مقبولة، لكن تحتاج مراجعة مركّزة للمواضيع الضعيفة."; en = "You passed. Focus your revision on the topics with the lowest bars."; }
+  else if(pct >= 50){ ar = "بداية جيدة، لكنك بحاجة إلى إعادة قراءة المحاضرة ثم إعادة الامتحان."; en = "A fair start, but you should revisit the lecture notes before retaking the exam."; }
+  else { ar = "لا بأس — هذه تجربة تدريبية. اقرأ الشرح في صفحة المراجعة ثم أعد المحاولة."; en = "This is practice. Read every explanation in the review page, then retake the exam."; }
+  $("msgAr").textContent = ar;
+  $("msgEn").textContent = en;
+  $("msgIcon").innerHTML = pct >= 60
+    ? '<path d="M20 6L9 17l-5-5"/>'
+    : '<circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/>';
+
+  /* topic bars */
+  $("topicBars").innerHTML = r.byTopic.map(t=>{
+    const p = Math.round(t.correct/t.total*100);
+    return `<div class="bar-row">
+      <div class="bar-top"><span>${esc(t.name)}</span><em>${t.correct}/${t.total} · ${p}%</em></div>
+      <div class="bar-track"><i data-w="${p}"></i></div>
+    </div>`;
+  }).join("");
+  requestAnimationFrame(()=>{
+    $("topicBars").querySelectorAll(".bar-track i").forEach(b=>{ b.style.width = b.dataset.w + "%"; });
+  });
+}
+
+/* ============================================================
+   REVIEW
+   ============================================================ */
+function buildTopicChips(){
+  $("topicChips").innerHTML = `<button class="chip on" data-topic="all" type="button">All Topics</button>` +
+    TOPICS.map((t,i)=>`<button class="chip" data-topic="${esc(t.name)}" type="button">T${i+1} · ${esc(t.name)}</button>`).join("");
+}
+
+function statusOf(q,i){
+  const a = state.answers[i];
+  if(!a) return "blank";
+  return a === q.answer ? "correct" : "wrong";
+}
+
+function renderReview(){
+  const {scope, topic} = state.review;
+  const list = $("revList");
+  let html = "", shown = 0;
+
+  questions.forEach((q,i)=>{
+    const st = statusOf(q,i);
+    if(scope === "wrong" && st === "correct") return;
+    if(scope === "correct" && st !== "correct") return;
+    if(topic !== "all" && q.topic !== topic) return;
+    shown++;
+
+    const userA = state.answers[i];
+    const stLabel = st === "correct" ? '<span class="rev-status c">✓ Correct</span>'
+      : st === "wrong" ? '<span class="rev-status w">✕ Incorrect</span>'
+      : '<span class="rev-status b">– Not Answered</span>';
+
+    const opt = (key,text)=>{
+      const isCorrect = (key === q.answer);
+      const isChosen = (userA === key);
+      let cls = "", badge = "";
+      if(isCorrect){ cls = "correct"; badge = '<span class="badge">✓ Correct answer</span>'; }
+      if(isChosen && !isCorrect){ cls = "wrong"; badge = '<span class="badge">✕ Your answer</span>'; }
+      else if(isChosen && isCorrect){ badge = '<span class="badge">✓ Your answer</span>'; }
+      const icon = isCorrect
+        ? '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M20 6L9 17l-5-5"/></svg>'
+        : (isChosen ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" style="vertical-align:-2px"><path d="M6 6l12 12M18 6L6 18"/></svg>' : '');
+      return `<div class="rev-opt ${cls}">
+        <span class="k">${key}</span>
+        <span class="t">${icon} ${esc(text)}</span>
+        ${badge}
+      </div>`;
+    };
+
+    html += `<article class="rev-card st-${st} reveal" data-num="${q.n}">
+      <div class="rev-head">
+        <span class="rev-num">Q${pad2(q.n)}</span>
+        <span class="topic-chip">${esc(q.topic)}</span>
+        ${stLabel}
+      </div>
+      <p class="rev-q">${esc(q.q)}</p>
+      ${st === "blank" ? '<div class="rev-blank"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 8v5M12 16.5v.5"/><circle cx="12" cy="12" r="9"/></svg> You left this question without an answer — لم تُجب عن هذا السؤال.</div>' : ""}
+      <div class="rev-opts">
+        ${opt("A", q.A)}
+        ${opt("B", q.B)}
+      </div>
+      <div class="rev-exp"><b>Why this is correct</b>${esc(explanations[q.n-1])}</div>
+    </article>`;
+  });
+
+  if(shown === 0){
+    html = `<div class="empty">
+      <div class="ico-lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <b>لا توجد أسئلة في هذه الفئة</b>
+      No questions match this filter — great job in this topic!
+    </div>`;
+  }
+
+  list.innerHTML = html;
+  $("reviewCount").textContent = `Showing ${shown} of ${TOTAL} questions · ${state.result ? state.result.score + "/60" : ""}`;
+
+  /* scroll reveal */
+  const cards = list.querySelectorAll(".rev-card.reveal");
+  if("IntersectionObserver" in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    },{threshold:.06, rootMargin:"0px 0px -40px 0px"});
+    cards.forEach(c=>io.observe(c));
+  }else{
+    cards.forEach(c=>c.classList.add("in"));
+  }
+}
+
+function openReview(scope){
+  state.review.scope = scope || "all";
+  state.review.topic = "all";
+  document.querySelectorAll("#scopeChips .chip").forEach(c=>c.classList.toggle("on", c.dataset.scope === state.review.scope));
+  document.querySelectorAll("#topicChips .chip").forEach(c=>c.classList.toggle("on", c.dataset.topic === "all"));
+  renderReview();
+  showScreen("screen-review");
+}
+
+/* ============================================================
+   RETAKE
+   ============================================================ */
+function retakeExam(){
+  stopTimer();
+  state.answers = new Array(TOTAL).fill(null);
+  state.idx = 0;
+  state.submitted = false;
+  state.seconds = 0;
+  state.result = null;
+  state.review = {scope:"all", topic:"all"};
+  $("timerTxt").textContent = "00:00";
+  $("radioA").checked = false;
+  $("radioB").checked = false;
+  renderQuestion(1);
+  updateProgress();
+  startTimer();
+  showScreen("screen-exam");
+  toast("تم تصفير الامتحان — بدأت من السؤال الأول");
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+function bindEvents(){
+  $("btnStart").addEventListener("click", ()=>{
+    state.started = true;
+    showScreen("screen-exam");
+    renderQuestion(1);
+    updateProgress();
+    startTimer();
+    toast("بالتوفيق! 60 سؤالًا — أجِب ثم اضغط Submit Exam");
+  });
+
+  $("btnPrev").addEventListener("click", prev);
+  $("btnNext").addEventListener("click", next);
+  $("radioA").addEventListener("change", ()=>selectAnswer("A"));
+  $("radioB").addEventListener("change", ()=>selectAnswer("B"));
+  $("optA").addEventListener("click", e=>{ if(e.target.tagName !== "INPUT"){ e.preventDefault(); selectAnswer("A"); } });
+  $("optB").addEventListener("click", e=>{ if(e.target.tagName !== "INPUT"){ e.preventDefault(); selectAnswer("B"); } });
+
+  $("btnSubmit").addEventListener("click", openConfirm);
+  $("btnSubmitInline").addEventListener("click", openConfirm);
+  $("btnModalBack").addEventListener("click", ()=>{
+    closeConfirm();
+    const firstBlank = state.answers.findIndex(v=>!v);
+    if(firstBlank > -1) goTo(firstBlank);
+    toast("أكمل الأسئلة المتبقية ثم سلّم الامتحان");
+  });
+  $("btnModalSubmit").addEventListener("click", submitExam);
+  $("modal").addEventListener("click", e=>{ if(e.target === $("modal")) closeConfirm(); });
+
+  $("navToggle").addEventListener("click", ()=> $("drawer").classList.contains("open") ? closeDrawer() : openDrawer());
+  $("drawerBd").addEventListener("click", closeDrawer);
+  $("drawerClose").addEventListener("click", closeDrawer);
+
+  $("btnReviewAll").addEventListener("click", ()=>openReview("all"));
+  $("btnReviewWrong").addEventListener("click", ()=>openReview("wrong"));
+  $("btnRetake1").addEventListener("click", retakeExam);
+  $("btnRetake2").addEventListener("click", retakeExam);
+  $("btnBackResults").addEventListener("click", ()=>showScreen("screen-results"));
+
+  $("scopeChips").addEventListener("click", e=>{
+    const c = e.target.closest(".chip"); if(!c) return;
+    state.review.scope = c.dataset.scope;
+    document.querySelectorAll("#scopeChips .chip").forEach(x=>x.classList.toggle("on", x === c));
+    renderReview();
+  });
+  $("topicChips").addEventListener("click", e=>{
+    const c = e.target.closest(".chip"); if(!c) return;
+    state.review.topic = c.dataset.topic;
+    document.querySelectorAll("#topicChips .chip").forEach(x=>x.classList.toggle("on", x === c));
+    renderReview();
+  });
+
+  document.addEventListener("keydown", e=>{
+    if(!$("modal").hidden){
+      if(e.key === "Escape") closeConfirm();
+      return;
+    }
+    if($("screen-exam").hidden || state.submitted) return;
+    if(e.key === "ArrowRight"){ e.preventDefault(); next(); }
+    else if(e.key === "ArrowLeft"){ e.preventDefault(); prev(); }
+    else if(e.key.toLowerCase() === "a" || e.key === "1"){ selectAnswer("A"); }
+    else if(e.key.toLowerCase() === "b" || e.key === "2"){ selectAnswer("B"); }
+    else if(e.key === "Enter" && state.idx < TOTAL-1){ e.preventDefault(); next(); }
+    else if(e.key.toLowerCase() === "n"){ openDrawer(); }
+  });
+}
+
+/* ============================================================
+   SELF-VALIDATION (console only)
+   ============================================================ */
+function validateBank(){
+  const ok = [];
+  ok.push(["questions.length === 60", TOTAL === 60]);
+  ok.push(["numbers 1..60 sequential", questions.every((q,i)=>q.n === i+1)]);
+  ok.push(["no duplicates", new Set(questions.map(q=>q.n)).size === TOTAL]);
+  ok.push(["every answer is A or B", questions.every(q=>q.answer === "A" || q.answer === "B")]);
+  ok.push(["Q60 answer === B", questions[59].answer === "B"]);
+  ok.push(["explanations = 60", explanations.length === TOTAL]);
+  ok.push(["topics cover all questions", questions.every(q=>TOPICS.some(t=>t.name===q.topic && q.n>=t.from && q.n<=t.to))]);
+  ok.forEach(([label,pass])=>console[pass?"log":"error"]("%c[CHECK] "+label+" : "+(pass?"PASS":"FAIL"),
+    "color:"+(pass?"#0f766e":"#ab2530")+";font-weight:bold"));
+  const key = questions.map(q=>q.answer).join("");
+  console.log("%c[ANSWER KEY] " + key, "color:#0b2545;font-weight:bold");
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(function init(){
+  renderCover();
+  buildNavGrid();
+  buildTopicList();
+  buildTopicChips();
+  bindEvents();
+  renderQuestion(1);
+  updateProgress();
+  showScreen("screen-cover");
+  validateBank();
+})();
+</script>
+</body>
+</html>
